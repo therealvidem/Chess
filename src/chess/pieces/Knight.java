@@ -7,7 +7,7 @@ public class Knight extends Piece {
         super(game, player, board, PieceType.KNIGHT, color, currentPosition);
     }
 
-    public PositionList getAvailablePositions() {
+    public PositionList calculateAvailablePositions() {
         PositionList positions = new PositionList();
         Position currentPosition = getCurrentPosition();
         for (int i = 0; i < 4; i++) {

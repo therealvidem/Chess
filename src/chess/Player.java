@@ -39,6 +39,10 @@ public class Player {
         return capturedPieces;
     }
 
+    public List<Piece> getPieces() {
+        return pieces;
+    }
+
     public void removePiece(Piece piece) {
         capturedPieces.remove(piece);
     }

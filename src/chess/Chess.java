@@ -3,19 +3,17 @@ package chess;
 import chess.pieces.Piece;
 import chess.pieces.PieceColor;
 
-import java.util.Scanner;
-
-public class Chess {
+public abstract class Chess {
     private Player white;
     private Player black;
     private Player currentPlayer;
     private Board board;
     private boolean running;
 
-    public Chess(String white, String black) {
+    public Chess(Board board, String white, String black) {
         this.white = new Player(white, PieceColor.WHITE);
         this.black = new Player(black, PieceColor.BLACK);
-        this.board = new Board(this);
+        this.board = board;
         this.white.setPieces(board.getPiecesByColor(PieceColor.WHITE));
         this.black.setPieces(board.getPiecesByColor(PieceColor.BLACK));
         this.currentPlayer = this.white;
@@ -48,6 +46,10 @@ public class Chess {
         return running;
     }
 
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public void switchTurns() {
         if (white == currentPlayer)
             currentPlayer = black;
@@ -55,45 +57,13 @@ public class Chess {
             currentPlayer = white;
     }
 
-    public Piece getPiece(Scanner scanner) {
-        String piecePositionString;
-        Piece piece;
+    public abstract Piece getPiece();
 
-        do {
-            System.out.println("(" + currentPlayer + ") Enter a valid piece coordinate to move: ");
-            piecePositionString = scanner.nextLine();
-            piece = board.getPiece(piecePositionString);
+    public abstract Position getNewPosition(Piece piece);
 
-            if (piece != null && piece.getColor() != currentPlayer.getColor()) {
-                System.out.println(Status.WRONG_COLOR);
-            } else if (piece == null) {
-                System.out.println(Status.EMPTY_SPACE);
-            }
+    public abstract void startGame();
 
-        } while (piece == null || piece.getColor() != currentPlayer.getColor());
+    public abstract void checkmate(Piece piece, Piece capturedPiece);
 
-        piece.updateAvailablePositions();
-
-        return piece;
-    }
-
-    public Position getNewPosition(Scanner scanner, Piece piece) {
-        String newPositionString;
-        Position newPosition;
-
-        do {
-            System.out.println("(" + currentPlayer + ") Enter a valid coordinate to move the piece to: ");
-            newPositionString = scanner.nextLine();
-            newPosition = Position.convertFromChessCoordinates(newPositionString);
-            if (newPosition == null) {
-                System.out.println(Status.INVALID_COORDINATE);
-                newPosition = new Position();
-            } else if (!piece.isValidPosition(newPosition)) {
-                System.out.println(Status.INVALID_MOVE);
-            }
-
-        } while (!piece.isValidPosition(newPosition));
-
-        return newPosition;
-    }
+    public abstract void stopGame();
 }

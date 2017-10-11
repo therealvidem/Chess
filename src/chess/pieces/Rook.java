@@ -7,7 +7,7 @@ public class Rook extends Piece {
         super(game, player, board, PieceType.ROOK, color, currentPosition);
     }
 
-    public PositionList getAvailablePositions() {
+    public PositionList calculateAvailablePositions() {
         return getAllAxisPositions();
     }
 }

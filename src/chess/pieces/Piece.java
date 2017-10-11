@@ -25,6 +25,10 @@ public abstract class Piece {
         return board;
     }
 
+    public PieceType getType() {
+        return type;
+    }
+
     public PieceColor getColor() {
         return color;
     }
@@ -51,13 +55,15 @@ public abstract class Piece {
             Player opposingPlayer = game.getPlayer(piece.getColor());
             opposingPlayer.removePiece(piece);
             player.addCapturedPiece(piece);
+            if (piece.getType().equals(PieceType.KING))
+                game.checkmate(this, piece);
         }
         board.movePiece(this, newPosition);
         currentPosition = newPosition;
         return piece;
     }
 
-    public PositionList getAxisPositions(int amount) {
+    PositionList getAxisPositions(int amount) {
         PositionList positions = new PositionList();
         int r = currentPosition.getRow();
         int c = currentPosition.getColumn();
@@ -65,7 +71,7 @@ public abstract class Piece {
         for (int i = 0; i < 4; i++) {
             int rDir = (int)Math.sin(i * (Math.PI / 2));
             int cDir = (int)Math.cos(i * (Math.PI / 2));
-            for (int j = 0; j < amount; j++)
+            for (int j = 1; j <= amount; j++)
                 if (!addToPositionList(positions, r + rDir * j, c + cDir * j))
                     break;
         }
@@ -73,44 +79,49 @@ public abstract class Piece {
         return positions;
     }
 
-    public PositionList getAllAxisPositions() {
+    PositionList getAllAxisPositions() {
         return getAxisPositions(8);
     }
 
-    public PositionList getDiagonalPositions(int amount) {
+    PositionList getDiagonalPositions(int amount) {
         PositionList positions = new PositionList();
         int r = currentPosition.getRow();
         int c = currentPosition.getColumn();
 
         for (int rDir = -1; rDir < 2; rDir += 2)
             for (int cDir = -1; cDir < 2; cDir += 2)
-                for (int i = 1; i < amount; i++)
-                    if (!addToPositionList(positions, r + i, c + i))
+                for (int i = 1; i <= amount; i++)
+                    if (!addToPositionList(positions, r + rDir * i, c + cDir * i))
                         break;
 
         return positions;
     }
 
-    public PositionList getAllDiagonalPositions() {
+    PositionList getAllDiagonalPositions() {
         return getDiagonalPositions(8);
     }
 
-    public boolean addToPositionList(PositionList positions, Position position) {
+    boolean addToPositionList(PositionList positions, Position position) {
         return addToPositionList(positions, position.getRow(), position.getColumn());
     }
 
-    public boolean addToPositionList(PositionList positions, int r, int c) {
+    boolean addToPositionList(PositionList positions, int r, int c) {
         Piece occupyingPiece = board.getPiece(r, c);
         if (occupyingPiece != null && occupyingPiece.getColor() == getColor())
             return false;
         return positions.add(r, c);
     }
 
-    public abstract PositionList getAvailablePositions();
+    public abstract PositionList calculateAvailablePositions();
 
-    public void updateAvailablePositions() {
-        availablePositions = getAvailablePositions();
+    public PositionList updateAvailablePositions() {
+        availablePositions = calculateAvailablePositions();
         System.out.println(availablePositions);
+        return availablePositions;
+    }
+
+    public boolean hasAvailablePositions() {
+        return !availablePositions.isEmpty();
     }
 
     public String toString() {

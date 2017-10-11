@@ -7,7 +7,7 @@ public class King extends Piece {
         super(game, player, board, PieceType.KING, color, currentPosition);
     }
 
-    public PositionList getAvailablePositions() {
+    public PositionList calculateAvailablePositions() {
         PositionList positions = new PositionList();
         positions.addAll(getDiagonalPositions(1));
         positions.addAll(getAxisPositions(1));

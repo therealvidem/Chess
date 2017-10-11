@@ -9,11 +9,7 @@ public class Pawn extends Piece {
         super(game, player, board, PieceType.PAWN, color, currentPosition);
     }
 
-    public void setMoved() {
-        this.moved = true;
-    }
-
-    public PositionList getAvailablePositions() {
+    public PositionList calculateAvailablePositions() {
         Board board = getBoard();
         Position position = getCurrentPosition();
         PositionList positions = new PositionList();
@@ -36,5 +32,11 @@ public class Pawn extends Piece {
         addToPositionList(positions, position.getRelativePosition(direction, 0));
 
         return positions;
+    }
+
+    @Override
+    public Piece makeMove(Position newPosition) {
+        moved = true;
+        return super.makeMove(newPosition);
     }
 }

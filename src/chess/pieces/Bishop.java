@@ -7,7 +7,7 @@ public class Bishop extends Piece {
         super(game, player, board, PieceType.BISHOP, color, currentPosition);
     }
 
-    public PositionList getAvailablePositions() {
+    public PositionList calculateAvailablePositions() {
         return getAllDiagonalPositions();
     }
 }
