@@ -106,13 +106,7 @@ public class ChessGame extends Chess {
 
         stopGame();
     }
-
-    @Override
-    public void checkmate(Piece piece, Piece capturedPiece) {
-        setRunning(false);
-        System.out.println("(" + getCurrentPlayer() + ") " + piece + " has checkmated " + capturedPiece);
-    }
-
+    
     @Override
     public void stopGame() {
         System.out.println(LINE);
