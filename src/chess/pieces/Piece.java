@@ -3,17 +3,13 @@ package chess.pieces;
 import chess.*;
 
 public abstract class Piece {
-    private Chess game;
-    private Player player;
     private Board board;
     private PieceType type;
     private PieceColor color;
     private Position currentPosition;
     private PositionList availablePositions;
 
-    public Piece(Chess game, Player player, Board board, PieceType type, PieceColor color, Position currentPosition) {
-        this.game = game;
-        this.player = player;
+    public Piece(Board board, PieceType type, PieceColor color, Position currentPosition) {
         this.board = board;
         this.type = type;
         this.color = color;
@@ -37,6 +33,10 @@ public abstract class Piece {
         return currentPosition;
     }
 
+    public Space getCurrentSpace() { return board.getSpace(getCurrentPosition()); }
+
+    public PositionList getAvailablePositions() { return availablePositions; }
+
     public String getUnicode() {
         return type.getUnicode(color);
     }
@@ -52,12 +52,14 @@ public abstract class Piece {
     public Piece makeMove(Position newPosition) {
         Piece piece = board.getPiece(newPosition);
         if (piece != null && piece.getColor() != getColor()) {
+            Chess game = board.getGame();
+            Player player = game.getPlayer(color);
             Player opposingPlayer = game.getPlayer(piece.getColor());
             opposingPlayer.removePiece(piece);
             player.addCapturedPiece(piece);
-            if (piece.getType().equals(PieceType.KING))
-                game.checkmate(this, piece);
         }
+        for (Position p : availablePositions)
+            getBoard().getSpace(p).removeThreat(this);
         board.movePiece(this, newPosition);
         currentPosition = newPosition;
         return piece;
@@ -72,7 +74,7 @@ public abstract class Piece {
             int rDir = (int)Math.sin(i * (Math.PI / 2));
             int cDir = (int)Math.cos(i * (Math.PI / 2));
             for (int j = 1; j <= amount; j++)
-                if (!addToPositionList(positions, r + rDir * j, c + cDir * j))
+                if(!addToPositionList(positions, r + rDir * j, c + cDir * j, true))
                     break;
         }
 
@@ -91,7 +93,7 @@ public abstract class Piece {
         for (int rDir = -1; rDir < 2; rDir += 2)
             for (int cDir = -1; cDir < 2; cDir += 2)
                 for (int i = 1; i <= amount; i++)
-                    if (!addToPositionList(positions, r + rDir * i, c + cDir * i))
+                    if(!addToPositionList(positions, r + rDir * i, c + cDir * i, true))
                         break;
 
         return positions;
@@ -101,22 +103,26 @@ public abstract class Piece {
         return getDiagonalPositions(8);
     }
 
-    boolean addToPositionList(PositionList positions, Position position) {
-        return addToPositionList(positions, position.getRow(), position.getColumn());
+    boolean addToPositionList(PositionList positions, Position position, boolean threat) {
+        return addToPositionList(positions, position.getRow(), position.getColumn(), threat);
     }
 
-    boolean addToPositionList(PositionList positions, int r, int c) {
+    boolean addToPositionList(PositionList positions, int r, int c, boolean threat) {
         Piece occupyingPiece = board.getPiece(r, c);
         if (occupyingPiece != null && occupyingPiece.getColor() == getColor())
             return false;
-        return positions.add(r, c);
+        if (positions.add(r, c)) {
+            if (threat)
+                board.getSpace(r, c).addThreat(this);
+            return true;
+        }
+        return false;
     }
 
     public abstract PositionList calculateAvailablePositions();
 
     public PositionList updateAvailablePositions() {
         availablePositions = calculateAvailablePositions();
-        System.out.println(availablePositions);
         return availablePositions;
     }
 

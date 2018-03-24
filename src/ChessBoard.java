@@ -1,4 +1,5 @@
 import chess.Board;
+import chess.Space;
 import chess.pieces.Piece;
 
 public class ChessBoard extends Board {
@@ -10,6 +11,7 @@ public class ChessBoard extends Board {
             for (int c = 0; c < 8; c++) {
                 if (c == 0)
                     boardString.append(8 - r).append(" ");
+                Space space = getSpace(r, c);
                 Piece piece = getPiece(r, c);
                 if (piece != null)
                     boardString.append(piece.getUnicode()).append(" ");

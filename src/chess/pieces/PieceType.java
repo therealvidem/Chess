@@ -1,7 +1,7 @@
 package chess.pieces;
 
 public enum PieceType {
-    KING    ("K", "K", "k", 200),
+    KING    ("K", "K", "k", 0),
     QUEEN   ("Q", "Q", "q", 9),
     ROOK    ("R", "R", "r", 5),
     BISHOP  ("B", "B", "b", 3),
@@ -20,7 +20,7 @@ public enum PieceType {
     }
 
     public String getUnicode(PieceColor color) {
-        if (color == PieceColor.WHITE)
+        if (color.equals(PieceColor.WHITE))
             return whiteUnicode;
         else
             return blackUnicode;

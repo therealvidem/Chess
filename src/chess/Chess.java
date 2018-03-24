@@ -63,7 +63,5 @@ public abstract class Chess {
 
     public abstract void startGame();
 
-    public abstract void checkmate(Piece piece, Piece capturedPiece);
-
-    public abstract void stopGame();
+    public abstract void stopGame(String reason);
 }

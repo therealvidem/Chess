@@ -3,8 +3,8 @@ package chess.pieces;
 import chess.*;
 
 public class Queen extends Piece {
-    public Queen(Chess game, Player player, Board board, PieceColor color, Position currentPosition) {
-        super(game, player, board, PieceType.QUEEN, color, currentPosition);
+    public Queen(Board board, PieceColor color, Position currentPosition) {
+        super(board, PieceType.QUEEN, color, currentPosition);
     }
 
     public PositionList calculateAvailablePositions() {
