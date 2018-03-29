@@ -7,6 +7,12 @@ public class King extends Piece {
         super(board, PieceType.KING, color, currentPosition);
     }
 
+    /*
+    The reason this is overridden is because the king needs to
+    check through each available positions as to make sure
+    it can't put itself onto a threatened space (i.e. check itself.)
+     */
+    @Override
     public PositionList calculateAvailablePositions() {
         PositionList positions = new PositionList();
         Position position = getCurrentPosition();
@@ -26,8 +32,6 @@ public class King extends Piece {
             }
         }
 
-        //positions.addAll(getDiagonalPositions(1));
-        //positions.addAll(getAxisPositions(1));
         return positions;
     }
 }

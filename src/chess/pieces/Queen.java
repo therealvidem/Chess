@@ -7,6 +7,7 @@ public class Queen extends Piece {
         super(board, PieceType.QUEEN, color, currentPosition);
     }
 
+    @Override
     public PositionList calculateAvailablePositions() {
         PositionList positions = new PositionList();
         positions.addAll(getAllDiagonalPositions());

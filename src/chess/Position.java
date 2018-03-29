@@ -3,8 +3,6 @@ package chess;
 import chess.pieces.PieceColor;
 
 public class Position {
-    private static final int WHITE_LEFT_SQUARE_ROW = 7;
-    private static final int BLACK_LEFT_SQUARE_ROW = 0;
     private int r;
     private int c;
 
@@ -27,13 +25,6 @@ public class Position {
 
     public Position getRelativePosition(int dr, int dc) {
         return new Position(r + dr, c + dc);
-    }
-
-    public static int getLeftSquareRow(PieceColor color) {
-        if (color.equals(PieceColor.WHITE))
-            return WHITE_LEFT_SQUARE_ROW;
-        else
-            return BLACK_LEFT_SQUARE_ROW;
     }
 
     public static Position convertFromChessCoordinates(String coordinates) {
@@ -65,11 +56,6 @@ public class Position {
         char letter = (char)(position.getColumn() + 'a');
         int number = 8 - position.getRow();
         return letter + "" + number;
-    }
-
-    public void setToNull() {
-        r = -1;
-        c = -1;
     }
 
     public boolean isNull() {

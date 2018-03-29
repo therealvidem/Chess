@@ -4,14 +4,13 @@ import chess.pieces.Piece;
 
 public class ChessBoard extends Board {
     @Override
-    protected String getBoardString() {
+    public String getBoardString() {
         StringBuilder boardString = new StringBuilder();
 
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
                 if (c == 0)
                     boardString.append(8 - r).append(" ");
-                Space space = getSpace(r, c);
                 Piece piece = getPiece(r, c);
                 if (piece != null)
                     boardString.append(piece.getUnicode()).append(" ");

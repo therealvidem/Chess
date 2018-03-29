@@ -1,6 +1,6 @@
 package chess.pieces;
 
-import chess.Position;
+import chess.Board;
 
 public enum PieceColor {
     WHITE ("White", -1),
@@ -17,7 +17,7 @@ public enum PieceColor {
         return dir;
     }
 
-    public int getLeftSquareRow() { return Position.getLeftSquareRow(this); }
+    public int getLeftSquareRow() { return Board.getLeftSquareRow(this); }
 
     public String toString() {
         return name;

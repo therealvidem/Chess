@@ -21,10 +21,6 @@ public abstract class Piece {
         return board;
     }
 
-    public PieceType getType() {
-        return type;
-    }
-
     public PieceColor getColor() {
         return color;
     }

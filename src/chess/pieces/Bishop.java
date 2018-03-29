@@ -7,5 +7,6 @@ public class Bishop extends Piece {
         super(board, PieceType.BISHOP, color, currentPosition);
     }
 
+    @Override
     public PositionList calculateAvailablePositions() { return getAllDiagonalPositions(); }
 }

@@ -25,6 +25,8 @@ public class ChessGame extends Chess {
         // If the king isn't forced to move (or threatened,) then the player may choose any piece.
         if (!piece.getCurrentSpace().isThreatened(playerColor)) {
 
+            // While the player has not chosen a valid piece, keep requesting them.
+            // This is a do-while loop since the player hasn't initially chosen a piece.
             do {
 
                 System.out.println("(" + currentPlayer + ") Enter a valid piece coordinate to move: ");
@@ -82,11 +84,19 @@ public class ChessGame extends Chess {
 
         } else {
             if (!piece.hasAvailablePositions()) {
+                /*
+                Checkmate, by definition, only occurs when a player's king is in check and has
+                no more available moves, as shown by the logic of this if statement, which checks
+                if the current space is threatened by any of the opposing player's pieces.
+                Otherwise, if the current space isn't threatened, it's by definition a stalemate.
+                 */
                 if (piece.getCurrentSpace().isThreatened(playerColor))
                     stopGame(getOpposingPlayer().toString() + " has checkmated " + currentPlayer.toString() + ".");
                 else
                     stopGame("There has been a stalemate.");
                 return null;
+            } else {
+                System.out.println("(" + currentPlayer + ") You're forced to move your king, as it is in check.");
             }
         }
 
@@ -99,18 +109,22 @@ public class ChessGame extends Chess {
         Position newPosition;
         System.out.println("Available Moves: " + piece.getAvailablePositions().toString());
 
+        // While the player has not chosen a valid coordinate to which the chosen piece is able to move, keep requesting them.
+        // This is a do-while loop since the player hasn't initially chosen a coordinate.
         do {
 
             System.out.println("(" + getCurrentPlayer() + ") Enter a valid coordinate for the piece to move to: ");
             newPositionString = scanner.nextLine();
+            if (newPositionString.equals("undo"))
+                return null;
 
             newPosition = Position.convertFromChessCoordinates(newPositionString);
             if (!Board.inBounds(newPosition)) {
                 System.out.println(Status.INVALID_COORDINATE);
-                newPosition.setToNull();
+                newPosition = null;
             } else if (!piece.isValidPosition(newPosition)) {
                 System.out.println(Status.INVALID_MOVE);
-                newPosition.setToNull();
+                newPosition = null;
             }
 
         } while (!Board.inBounds(newPosition));
@@ -118,42 +132,49 @@ public class ChessGame extends Chess {
         return newPosition;
     }
 
-    @Override
-    public void startGame() {
+    private void startTurn() {
         Board board = getBoard();
 
-        while (isRunning()) {
+        System.out.println(LINE);
 
-            System.out.println(LINE);
+            System.out.println(board);
 
-                System.out.println(board);
+        System.out.println(LINE);
 
-            System.out.println(LINE);
+            Player currentPlayer = getCurrentPlayer();
+            Player opposingPlayer = getOpposingPlayer();
+            Piece piece = getPiece();
+            if (!isRunning())
+                return;
+            System.out.println("(" + currentPlayer + ") Selected " + piece);
 
-                Player currentPlayer = getCurrentPlayer();
-                Player opposingPlayer = getOpposingPlayer();
-                Piece piece = getPiece();
-                if (!isRunning())
-                    break;
-                System.out.println("(" + currentPlayer + ") Selected " + piece);
+            Position newPosition = getNewPosition(piece);
+            if (newPosition == null)
+                return;
+            String oldPieceString = piece.toString();
+            Piece capturedPiece = piece.makeMove(newPosition);
+            System.out.println("(" + currentPlayer + ") Moved " + oldPieceString + " to " + newPosition);
 
-                Position newPosition = getNewPosition(piece);
-                String oldPieceString = piece.toString();
-                Piece capturedPiece = piece.makeMove(newPosition);
-                System.out.println("(" + currentPlayer + ") Moved " + oldPieceString + " to " + newPosition);
+            if (capturedPiece != null)
+                System.out.println("(" + currentPlayer + ") " + oldPieceString + " captured " + capturedPiece);
 
-                if (capturedPiece != null)
-                    System.out.println("(" + currentPlayer + ") " + oldPieceString + " captured " + capturedPiece);
+        System.out.println(LINE);
 
-            System.out.println(LINE);
+            System.out.println(currentPlayer + "'s Captured Pieces: " + currentPlayer.getCapturedPieces());
+            System.out.println(opposingPlayer + "'s Captured Pieces: " + opposingPlayer.getCapturedPieces());
 
-                System.out.println(currentPlayer + "'s Captured Pieces: " + currentPlayer.getCapturedPieces());
-                System.out.println(opposingPlayer + "'s Captured Pieces: " + opposingPlayer.getCapturedPieces());
+        board.updateBoard();
+        switchTurns();
+    }
 
-            board.updateBoard();
-            switchTurns();
-
-        }
+    @Override
+    public void startGame() {
+        /*
+        startTurn is a separate method so if a player wants to undo choosing a piece,
+        then startTurn can return to this while loop.
+         */
+        while (isRunning())
+            startTurn();
     }
     
     @Override

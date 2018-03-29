@@ -7,6 +7,7 @@ public class Pawn extends Piece {
         super(board, PieceType.PAWN, color, currentPosition);
     }
 
+    @Override
     public PositionList calculateAvailablePositions() {
         Board board = getBoard();
         Position position = getCurrentPosition();

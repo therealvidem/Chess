@@ -7,6 +7,12 @@ public class Knight extends Piece {
         super(board, PieceType.KNIGHT, color, currentPosition);
     }
 
+    /*
+    The usage of sine and cosine is more of a neat method for
+    getting the knight's available moves, compared to just manually
+    typing out 8 of its unique moves.
+     */
+    @Override
     public PositionList calculateAvailablePositions() {
         PositionList positions = new PositionList();
         Position currentPosition = getCurrentPosition();

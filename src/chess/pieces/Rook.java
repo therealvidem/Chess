@@ -7,6 +7,7 @@ public class Rook extends Piece {
         super(board, PieceType.ROOK, color, currentPosition);
     }
 
+    @Override
     public PositionList calculateAvailablePositions() {
         return getAllAxisPositions();
     }
